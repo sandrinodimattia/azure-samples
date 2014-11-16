@@ -1,0 +1,50 @@
+﻿<Page
+    x:Class="MyTodos.WP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyTodos.WP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:infrastructure="using:MyTodos.WP.Infrastructure"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <infrastructure:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <DataTemplate x:Key="TodoDataTemplate">
+            <StackPanel Background="{x:Null}" >
+                <TextBlock Text="{Binding Title}" FontSize="20" />
+                <TextBlock Text="{Binding CreatedOn}"></TextBlock>
+                <TextBlock Visibility="{Binding IsComplete, Converter={StaticResource BooleanToVisibilityConverter}}">Complete!</TextBlock>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Grid.Row="0" Margin="12,0,12,0">
+            <TextBlock FontSize="24">New Task:</TextBlock>
+            <TextBox Text="{Binding Title, Mode=TwoWay}"></TextBox>
+            <CheckBox IsChecked="{Binding IsComplete, Mode=TwoWay}" Content="Completed?"></CheckBox>
+            <Button Command="{Binding NewTodoCommand}" Content="Create New"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="12,0,12,0" Visibility="{Binding HasTodos, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock FontSize="24">My Todos:</TextBlock>
+            <ListView ItemsSource="{Binding Todos}" ItemTemplate="{StaticResource TodoDataTemplate}" x:Name="ListView"/>
+        </StackPanel>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Sign In" Icon="People" Command="{Binding SignInCommand}" />
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>
